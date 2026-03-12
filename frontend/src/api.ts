@@ -13,8 +13,8 @@ export async function createMeeting(form: FormData): Promise<Meeting> {
   return data;
 }
 
-export async function createLiveMeeting(title: string, vocabulary?: string): Promise<Meeting> {
-  const { data } = await api.post("/meetings/live", { title, vocabulary: vocabulary || null });
+export async function createLiveMeeting(title: string, vocabulary?: string, language?: string): Promise<Meeting> {
+  const { data } = await api.post("/meetings/live", { title, vocabulary: vocabulary || null, language: language || "sv" });
   return data;
 }
 

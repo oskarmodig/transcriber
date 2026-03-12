@@ -37,6 +37,7 @@ export default function HomePage() {
   const [minSpeakers, setMinSpeakers] = useState("");
   const [maxSpeakers, setMaxSpeakers] = useState("");
   const [vocabulary, setVocabulary] = useState("");
+  const [language, setLanguage] = useState("sv");
   const fileRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -127,6 +128,7 @@ export default function HomePage() {
       if (minSpeakers) form.append("min_speakers", minSpeakers);
       if (maxSpeakers) form.append("max_speakers", maxSpeakers);
       if (vocabulary.trim()) form.append("vocabulary", vocabulary.trim());
+      form.append("language", language);
 
       const meeting = await createMeeting(form);
       setError(null);
@@ -145,7 +147,7 @@ export default function HomePage() {
     if (!title.trim()) return;
     setUploading(true);
     try {
-      const meeting = await createLiveMeeting(title.trim(), vocabulary.trim() || undefined);
+      const meeting = await createLiveMeeting(title.trim(), vocabulary.trim() || undefined, language);
       setError(null);
       setShowUpload(false);
       resetDialog();
@@ -164,6 +166,7 @@ export default function HomePage() {
     setMinSpeakers("");
     setMaxSpeakers("");
     setVocabulary("");
+    setLanguage("sv");
     setRecording(false);
     setRecordingTime(0);
     setInputMode("file");
@@ -508,6 +511,30 @@ export default function HomePage() {
               onChange={(e) => setTitle(e.target.value)}
               className="w-full bg-slate-800 border border-slate-700/50 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 mb-4"
             />
+
+            {/* Language selector */}
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setLanguage("sv")}
+                className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  language === "sv"
+                    ? "bg-violet-600 text-white"
+                    : "bg-slate-800 text-slate-400 hover:text-white border border-slate-700/50"
+                }`}
+              >
+                Svenska
+              </button>
+              <button
+                onClick={() => setLanguage("en")}
+                className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition ${
+                  language === "en"
+                    ? "bg-violet-600 text-white"
+                    : "bg-slate-800 text-slate-400 hover:text-white border border-slate-700/50"
+                }`}
+              >
+                English
+              </button>
+            </div>
 
             {/* Advanced settings */}
             <details className="mb-5 group">
