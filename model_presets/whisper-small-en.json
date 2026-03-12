@@ -1,0 +1,8 @@
+{
+  "id": "whisper-small-en",
+  "name": "Whisper Small (English)",
+  "type": "whisper",
+  "provider": "local",
+  "model_path": null,
+  "language": "en"
+}

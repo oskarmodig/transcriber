@@ -3,5 +3,6 @@
   "name": "Whisper Medium (Swedish)",
   "type": "whisper",
   "provider": "local",
-  "model_path": null
+  "model_path": null,
+  "language": "sv"
 }

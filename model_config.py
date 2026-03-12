@@ -99,6 +99,28 @@ class ModelConfigManager:
         """Alias for get_preset_for_task."""
         return self.get_preset_for_task(task)
 
+    def get_whisper_model_for_language(self, task: str, language: str) -> Optional[dict]:
+        """Get the whisper preset matching a language and task type.
+
+        task: 'transcription' or 'live_transcription'
+        language: e.g. 'sv', 'en'
+
+        Searches presets for a whisper model matching the language.
+        Falls back to the default preset for the task if none found.
+        """
+        # Determine which size to look for based on task
+        size = "small" if task == "live_transcription" else "medium"
+
+        # Search for a preset matching language and size
+        for preset in self._presets.values():
+            if (preset.get("type") == "whisper"
+                    and preset.get("language") == language
+                    and size in preset.get("id", "")):
+                return preset
+
+        # Fall back to default for task
+        return self.get_preset_for_task(task)
+
 
 # Singleton instance
 _manager: Optional[ModelConfigManager] = None

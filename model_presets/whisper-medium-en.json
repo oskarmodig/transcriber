@@ -1,0 +1,8 @@
+{
+  "id": "whisper-medium-en",
+  "name": "Whisper Medium (English)",
+  "type": "whisper",
+  "provider": "local",
+  "model_path": null,
+  "language": "en"
+}

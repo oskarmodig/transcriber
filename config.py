@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     whisper_cli_path: str = "../whisper.cpp/build/bin/whisper-cli"
     whisper_model_path: str = "./models/kb_whisper_ggml_medium.bin"
     whisper_small_model_path: str = "./models/kb_whisper_ggml_small.bin"
+    whisper_model_path_en: str = "./models/ggml-medium.en.bin"
+    whisper_small_model_path_en: str = "./models/ggml-small.en.bin"
     storage_path: str = "./storage"
     hf_auth_token: str = ""
     cors_origins: str = ""  # Comma-separated, e.g. "http://localhost:3000,http://myapp.com"
