@@ -107,19 +107,43 @@ class ModelConfigManager:
 
         Searches presets for a whisper model matching the language.
         Falls back to the default preset for the task if none found.
+        Resolves null model_path from config settings.
         """
+        from config import settings
+
         # Determine which size to look for based on task
         size = "small" if task == "live_transcription" else "medium"
 
         # Search for a preset matching language and size
-        for preset in self._presets.values():
-            if (preset.get("type") == "whisper"
-                    and preset.get("language") == language
-                    and size in preset.get("id", "")):
-                return preset
+        preset = None
+        for p in self._presets.values():
+            if (p.get("type") == "whisper"
+                    and p.get("language") == language
+                    and size in p.get("id", "")):
+                preset = p
+                break
 
-        # Fall back to default for task
-        return self.get_preset_for_task(task)
+        if not preset:
+            preset = self.get_preset_for_task(task)
+
+        if not preset:
+            return None
+
+        # Resolve null model_path from config based on language
+        result = dict(preset)
+        if not result.get("model_path"):
+            if language == "en":
+                result["model_path"] = (
+                    settings.whisper_small_model_path_en if size == "small"
+                    else settings.whisper_model_path_en
+                )
+            else:
+                result["model_path"] = (
+                    settings.whisper_small_model_path if size == "small"
+                    else settings.whisper_model_path
+                )
+
+        return result
 
 
 # Singleton instance
