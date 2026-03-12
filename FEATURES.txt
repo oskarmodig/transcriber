@@ -6,7 +6,8 @@ transcript with speakers identified by name.
 TRANSCRIPTION
 - Upload audio or video files (MP3, MP4, WAV, WebM, M4A)
 - Record directly in the browser with a visual audio level meter
-- Choose which microphone to use, or capture computer audio
+- Choose which microphone to use, capture computer audio, or both
+  combined for remote meetings (Chrome only)
 - Live mode: see the transcript appear word by word as you speak
 - Optimized for Swedish using locally running AI models
 

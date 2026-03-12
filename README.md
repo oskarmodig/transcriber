@@ -193,7 +193,7 @@ Open **http://localhost:5174** in your browser.
 1. Click **New transcription** on the home page
 2. Choose **Upload**, **Record**, or **Live**
    - **Upload**: drag-and-drop or browse for an audio/video file
-   - **Record**: select your microphone (or system audio) and record
+   - **Record**: select your microphone, system audio, or both combined and record
    - **Live**: start a real-time transcription session
 3. Enter a title and click **Start**
 4. For uploaded files, click **Start transcription** on the meeting page

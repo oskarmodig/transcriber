@@ -4,7 +4,7 @@
 
 - **File upload** - Drag-and-drop or browse for audio/video files (MP3, MP4, WAV, WebM, M4A)
 - **Browser recording** - Record directly from the browser with real-time audio level visualization
-- **Audio source selection** - Choose between available microphones or capture system/desktop audio via screen share
+- **Audio source selection** - Choose between available microphones, system/desktop audio via screen share, or mic + system audio combined (Chrome only) for capturing both sides of remote meetings
 - **Live transcription** - Real-time WebSocket-based transcription that streams segments as you speak
 - **Swedish speech recognition** - whisper.cpp with KB-LAB Swedish models, Metal GPU accelerated on Apple Silicon
 - **Vocabulary priming** - Provide domain-specific terms to improve transcription accuracy for names, jargon, and abbreviations

@@ -4,7 +4,7 @@
 
 - **Filuppladdning** - Dra och släpp eller bläddra efter ljud-/videofiler (MP3, MP4, WAV, WebM, M4A)
 - **Inspelning i webbläsaren** - Spela in direkt från webbläsaren med visualisering av ljudnivå i realtid
-- **Val av ljudkälla** - Välj mellan tillgängliga mikrofoner eller fånga systemljud/skrivbordsljud via skärmdelning
+- **Val av ljudkälla** - Välj mellan tillgängliga mikrofoner, systemljud/skrivbordsljud via skärmdelning, eller mikrofon + systemljud kombinerat (endast Chrome) för att fånga båda sidor av fjärrmöten
 - **Livetranskribering** - WebSocket-baserad realtidstranskribering som strömmar segment medan du talar
 - **Svensk taligenkänning** - whisper.cpp med KB-LAB:s svenska modeller, Metal GPU-accelererat på Apple Silicon
 - **Vokabulärpriming** - Ange domänspecifika termer för att förbättra transkriberingsnoggrannheten för namn, facktermer och förkortningar
