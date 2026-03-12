@@ -8,7 +8,8 @@ TRANSCRIPTION
 - Record directly in the browser with a visual audio level meter
 - Choose which microphone to use, or capture computer audio
 - Live mode: see the transcript appear word by word as you speak
-- Optimized for Swedish using locally running AI models
+- Choose language per meeting: Swedish or English
+- Powered by locally running AI models
 
 SPEAKER IDENTIFICATION
 - Automatically detects who is speaking and when

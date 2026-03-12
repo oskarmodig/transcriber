@@ -6,7 +6,7 @@
 - **Inspelning i webbläsaren** - Spela in direkt från webbläsaren med visualisering av ljudnivå i realtid
 - **Val av ljudkälla** - Välj mellan tillgängliga mikrofoner eller fånga systemljud/skrivbordsljud via skärmdelning
 - **Livetranskribering** - WebSocket-baserad realtidstranskribering som strömmar segment medan du talar
-- **Svensk taligenkänning** - whisper.cpp med KB-LAB:s svenska modeller, Metal GPU-accelererat på Apple Silicon
+- **Flerspråksstöd** - Välj språk per möte: svenska (KB-LAB-modeller) eller engelska (whisper.cpp-modeller), Metal GPU-accelererat på Apple Silicon
 - **Vokabulärpriming** - Ange domänspecifika termer för att förbättra transkriberingsnoggrannheten för namn, facktermer och förkortningar
 - **Standardvokabulär** - Ange globalt vokabulär i inställningar som automatiskt tillämpas på alla nya transkriberingar
 - **Automatisk ljudextrahering** - FFmpeg konverterar alla format till 16 kHz mono WAV

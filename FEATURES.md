@@ -6,7 +6,7 @@
 - **Browser recording** - Record directly from the browser with real-time audio level visualization
 - **Audio source selection** - Choose between available microphones or capture system/desktop audio via screen share
 - **Live transcription** - Real-time WebSocket-based transcription that streams segments as you speak
-- **Swedish speech recognition** - whisper.cpp with KB-LAB Swedish models, Metal GPU accelerated on Apple Silicon
+- **Multi-language support** - Per-meeting language selection: Swedish (KB-LAB models) or English (whisper.cpp models), Metal GPU accelerated on Apple Silicon
 - **Vocabulary priming** - Provide domain-specific terms to improve transcription accuracy for names, jargon, and abbreviations
 - **Default vocabulary** - Set global vocabulary in preferences, automatically applied to all new transcriptions
 - **Automatic audio extraction** - FFmpeg converts any input to 16kHz mono WAV

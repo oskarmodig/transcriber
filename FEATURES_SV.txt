@@ -8,7 +8,8 @@ TRANSKRIBERING
 - Spela in direkt i webbläsaren med visuell ljudnivåmätare
 - Välj vilken mikrofon som ska användas, eller fånga datorljud
 - Live-läge: se transkriptet växa fram ord för ord medan du talar
-- Optimerat för svenska med lokalt körande AI-modeller
+- Välj språk per möte: svenska eller engelska
+- Drivs av lokalt körande AI-modeller
 
 TALARIDENTIFIERING
 - Upptäcker automatiskt vem som talar och när

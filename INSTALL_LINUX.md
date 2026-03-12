@@ -89,6 +89,16 @@ curl -L -o models/kb_whisper_ggml_small.bin \
   https://huggingface.co/KBLab/kb-whisper-small/resolve/main/ggml-model.bin
 ```
 
+**Optional: English models** (needed if you want to transcribe in English):
+
+```bash
+curl -L -o models/ggml-medium.en.bin \
+  https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-medium.en.bin
+
+curl -L -o models/ggml-small.en.bin \
+  https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.en.bin
+```
+
 ### 5. Start PostgreSQL and Redis
 
 ```bash
@@ -126,6 +136,9 @@ OLLAMA_MODEL=qwen3:8b
 WHISPER_CLI_PATH=../whisper.cpp/build/bin/whisper-cli
 WHISPER_MODEL_PATH=./models/kb_whisper_ggml_medium.bin
 WHISPER_SMALL_MODEL_PATH=./models/kb_whisper_ggml_small.bin
+# English models (optional, needed for English transcription)
+WHISPER_MODEL_PATH_EN=./models/ggml-medium.en.bin
+WHISPER_SMALL_MODEL_PATH_EN=./models/ggml-small.en.bin
 
 STORAGE_PATH=./storage
 
