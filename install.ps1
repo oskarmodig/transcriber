@@ -126,6 +126,29 @@ if (Test-Path "models\kb_whisper_ggml_small.bin") {
     Ok "Small model downloaded"
 }
 
+# Optional: English models
+Write-Host ""
+$downloadEnglish = Read-Host "Do you also want to download English Whisper models? [y/N]"
+if ($downloadEnglish -match "^[Yy]") {
+    if (Test-Path "models\ggml-medium.en.bin") {
+        Ok "English medium model already downloaded"
+    } else {
+        Info "Downloading Whisper English medium model (~1.5 GB)..."
+        curl.exe -L --progress-bar -o "models\ggml-medium.en.bin" `
+            "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-medium.en.bin"
+        Ok "English medium model downloaded"
+    }
+
+    if (Test-Path "models\ggml-small.en.bin") {
+        Ok "English small model already downloaded"
+    } else {
+        Info "Downloading Whisper English small model (~500 MB)..."
+        curl.exe -L --progress-bar -o "models\ggml-small.en.bin" `
+            "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.en.bin"
+        Ok "English small model downloaded"
+    }
+}
+
 # -------------------------------------------
 # Step 4: Start Docker services
 # -------------------------------------------
@@ -197,6 +220,8 @@ OLLAMA_MODEL=qwen3:8b
 WHISPER_CLI_PATH=$whisperCliPath
 WHISPER_MODEL_PATH=./models/kb_whisper_ggml_medium.bin
 WHISPER_SMALL_MODEL_PATH=./models/kb_whisper_ggml_small.bin
+WHISPER_MODEL_PATH_EN=./models/ggml-medium.en.bin
+WHISPER_SMALL_MODEL_PATH_EN=./models/ggml-small.en.bin
 
 STORAGE_PATH=./storage
 
