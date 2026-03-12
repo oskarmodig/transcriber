@@ -6,7 +6,8 @@ komplett transkript med talare identifierade vid namn.
 TRANSKRIBERING
 - Ladda upp ljud- eller videofiler (MP3, MP4, WAV, WebM, M4A)
 - Spela in direkt i webbläsaren med visuell ljudnivåmätare
-- Välj vilken mikrofon som ska användas, eller fånga datorljud
+- Välj vilken mikrofon som ska användas, fånga datorljud, eller
+  kombinera båda för fjärrmöten (endast Chrome)
 - Live-läge: se transkriptet växa fram ord för ord medan du talar
 - Optimerat för svenska med lokalt körande AI-modeller
 

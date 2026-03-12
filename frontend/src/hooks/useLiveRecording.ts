@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useStore } from "../store";
-import { getAudioStream } from "../components/AudioSourceSelect";
+import { getAudioStream, getMixedSources } from "../components/AudioSourceSelect";
+import type { MixedStreamSources } from "../components/AudioSourceSelect";
 import type { ProgressUpdate } from "../types";
 
 interface UseLiveRecordingOptions {
@@ -25,6 +26,7 @@ export function useLiveRecording({ meetingId, deviceId, onFinalizeComplete }: Us
   const animFrameRef = useRef<number>(0);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const mixedSourcesRef = useRef<MixedStreamSources | null>(null);
   const isRecordingRef = useRef(false);
   const isMountedRef = useRef(true);
   const reconnectTimerRef = useRef<number>(0);
@@ -44,6 +46,15 @@ export function useLiveRecording({ meetingId, deviceId, onFinalizeComplete }: Us
     };
   }, []);
 
+  function cleanupMixedSources() {
+    if (mixedSourcesRef.current) {
+      mixedSourcesRef.current.micStream.getTracks().forEach((t) => t.stop());
+      mixedSourcesRef.current.systemStream.getTracks().forEach((t) => t.stop());
+      mixedSourcesRef.current.audioContext.close();
+      mixedSourcesRef.current = null;
+    }
+  }
+
   function cleanup() {
     clearTimeout(reconnectTimerRef.current);
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
@@ -52,6 +63,7 @@ export function useLiveRecording({ meetingId, deviceId, onFinalizeComplete }: Us
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
     }
+    cleanupMixedSources();
     if (audioCtxRef.current) {
       audioCtxRef.current.close();
     }
@@ -152,9 +164,10 @@ export function useLiveRecording({ meetingId, deviceId, onFinalizeComplete }: Us
       setTimeout(() => reject(new Error("WebSocket timeout")), 5000);
     });
 
-    // Get audio stream (mic or system audio)
+    // Get audio stream (mic, system audio, or mixed)
     const stream = await getAudioStream(deviceId || "default");
     streamRef.current = stream;
+    mixedSourcesRef.current = getMixedSources(stream) || null;
 
     // Audio level meter
     const audioCtx = new AudioContext();
@@ -221,6 +234,7 @@ export function useLiveRecording({ meetingId, deviceId, onFinalizeComplete }: Us
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
     }
+    cleanupMixedSources();
     if (audioCtxRef.current) {
       audioCtxRef.current.close();
     }

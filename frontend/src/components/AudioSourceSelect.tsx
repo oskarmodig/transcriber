@@ -1,6 +1,26 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../store";
 
+/** Streams attached to a mixed stream so they can be cleaned up later */
+export interface MixedStreamSources {
+  micStream: MediaStream;
+  systemStream: MediaStream;
+  audioContext: AudioContext;
+}
+
+/** Key used to attach source streams to mixed MediaStream */
+const MIXED_SOURCES_KEY = "__mixedSources";
+
+/** Retrieve source streams from a mixed MediaStream (if any) */
+export function getMixedSources(stream: MediaStream): MixedStreamSources | undefined {
+  return (stream as any)[MIXED_SOURCES_KEY];
+}
+
+function isChromeBrowser(): boolean {
+  const ua = navigator.userAgent;
+  return /Chrome\//.test(ua) && !/Edg\//.test(ua) || /Chromium\//.test(ua);
+}
+
 export async function getAudioStream(deviceId: string): Promise<MediaStream> {
   if (deviceId === "system") {
     const stream = await navigator.mediaDevices.getDisplayMedia({
@@ -15,6 +35,35 @@ export async function getAudioStream(deviceId: string): Promise<MediaStream> {
     return stream;
   }
 
+  if (deviceId === "mic+system") {
+    // Get mic stream
+    const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    // Get system audio stream
+    const systemStream = await navigator.mediaDevices.getDisplayMedia({
+      video: { width: 1, height: 1 },
+      audio: true,
+    });
+    systemStream.getVideoTracks().forEach((t) => t.stop());
+    if (systemStream.getAudioTracks().length === 0) {
+      micStream.getTracks().forEach((t) => t.stop());
+      throw new Error("No system audio captured. Make sure to share a tab with audio enabled.");
+    }
+
+    // Mix both streams using Web Audio API
+    const audioContext = new AudioContext();
+    const micSource = audioContext.createMediaStreamSource(micStream);
+    const systemSource = audioContext.createMediaStreamSource(systemStream);
+    const destination = audioContext.createMediaStreamDestination();
+    micSource.connect(destination);
+    systemSource.connect(destination);
+
+    const mixedStream = destination.stream;
+    // Attach original streams for cleanup
+    (mixedStream as any)[MIXED_SOURCES_KEY] = { micStream, systemStream, audioContext } as MixedStreamSources;
+    return mixedStream;
+  }
+
   if (deviceId && deviceId !== "default") {
     return navigator.mediaDevices.getUserMedia({
       audio: { deviceId: { exact: deviceId } },
@@ -27,6 +76,7 @@ export async function getAudioStream(deviceId: string): Promise<MediaStream> {
 export default function AudioSourceSelect() {
   const { selectedAudioDevice, setSelectedAudioDevice } = useStore();
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [isChrome] = useState(isChromeBrowser);
 
   async function enumerate() {
     try {
@@ -67,8 +117,16 @@ export default function AudioSourceSelect() {
               {d.label || `Microphone (${d.deviceId.slice(0, 8)}...)`}
             </option>
           ))}
-        <option value="system">System audio (screen share)</option>
+        <option value="mic+system" disabled={!isChrome}>
+          Mic + System audio{!isChrome ? " (Chrome only)" : ""}
+        </option>
+        <option value="system" disabled={!isChrome}>
+          System audio (screen share){!isChrome ? " (Chrome only)" : ""}
+        </option>
       </select>
+      {selectedAudioDevice === "mic+system" && (
+        <p className="text-xs text-slate-500 mt-1">Use headphones to avoid echo</p>
+      )}
     </div>
   );
 }
