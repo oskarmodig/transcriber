@@ -33,11 +33,12 @@ class LiveTranscriptionSession:
     The real speaker identification happens in polish passes (pyannote + LLM).
     """
 
-    def __init__(self, meeting_id: str, meeting_path: Path, whisper_model_path: str | None = None, vocabulary: str | None = None):
+    def __init__(self, meeting_id: str, meeting_path: Path, whisper_model_path: str | None = None, vocabulary: str | None = None, language: str = "sv"):
         self.meeting_id = meeting_id
         self.meeting_path = meeting_path
         self.whisper_model_path = whisper_model_path
         self.vocabulary = vocabulary
+        self.language = language
         self.audio_path = str(meeting_path / "audio.wav")
         self.pcm_path = str(meeting_path / "audio.raw")
         self.total_pcm_samples = 0
@@ -103,7 +104,7 @@ class LiveTranscriptionSession:
         # 6. Transcribe
         try:
             raw_segments = await loop.run_in_executor(
-                None, self.whisper_service.transcribe_chunk, temp_wav, self.whisper_model_path, prompt, self.vocabulary
+                None, self.whisper_service.transcribe_chunk, temp_wav, self.whisper_model_path, prompt, self.vocabulary, self.language
             )
         except Exception as e:
             print(f"Whisper chunk error: {e}")
@@ -322,10 +323,12 @@ async def live_websocket(websocket: WebSocket, meeting_id: str):
     await pubsub.subscribe(f"meeting:{meeting_id}")
 
     meeting_path = get_meeting_path(meeting_id)
-    # Get whisper model for live transcription from presets
-    live_whisper = get_model_config().get_model_for_task("live_transcription")
+    # Get language-specific whisper model for live transcription
+    language = meeting.language or "sv"
+    model_cfg = get_model_config()
+    live_whisper = model_cfg.get_whisper_model_for_language("live_transcription", language)
     live_whisper_model = live_whisper.get("model_path") if live_whisper else None
-    session = LiveTranscriptionSession(meeting_id, meeting_path, whisper_model_path=live_whisper_model, vocabulary=meeting.vocabulary)
+    session = LiveTranscriptionSession(meeting_id, meeting_path, whisper_model_path=live_whisper_model, vocabulary=meeting.vocabulary, language=language)
 
     async def relay_redis():
         """Forward Redis pub/sub messages (polish/finalize results) to WS client."""

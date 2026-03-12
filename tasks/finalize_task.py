@@ -49,8 +49,14 @@ def finalize_live_task(self, meeting_id: str, job_id: str):
         audio_service = AudioService()
         whisper_service = WhisperService()
         diarization_service = DiarizationService()
-        analysis_preset = get_model_config().get_model_for_task("analysis")
+        model_cfg = get_model_config()
+        analysis_preset = model_cfg.get_model_for_task("analysis")
         speaker_id_service = SpeakerIdService(llm_preset=analysis_preset)
+
+        # Get language-specific whisper model
+        language = meeting.language or "sv"
+        whisper_preset = model_cfg.get_whisper_model_for_language("transcription", language)
+        whisper_model_path = whisper_preset.get("model_path") if whisper_preset else None
 
         # Get duration
         update_progress(db, job, meeting, 5, "Beräknar ljudlängd...")
@@ -60,7 +66,7 @@ def finalize_live_task(self, meeting_id: str, job_id: str):
 
         # Step 1: Re-transcribe with medium (high-quality) model
         update_progress(db, job, meeting, 10, "Transkriberar med högkvalitetsmodell...")
-        whisper_segments = whisper_service.transcribe(audio_path, vocabulary=meeting.vocabulary)
+        whisper_segments = whisper_service.transcribe(audio_path, vocabulary=meeting.vocabulary, language=language, model_path=whisper_model_path)
         meeting.raw_transcription = whisper_segments
         db.commit()
         update_progress(db, job, meeting, 40, "Transkribering klar")
