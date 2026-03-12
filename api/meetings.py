@@ -51,14 +51,21 @@ def list_meetings(db: Session = Depends(get_db)):
 
 
 @router.post("")
+SUPPORTED_LANGUAGES = {"sv", "en"}
+
 async def create_meeting(
     title: str = Form(...),
     file: UploadFile = File(...),
     min_speakers: int = Form(None),
     max_speakers: int = Form(None),
     vocabulary: str = Form(None),
+    language: str = Form("sv"),
     db: Session = Depends(get_db),
 ):
+    # Validate language
+    if language not in SUPPORTED_LANGUAGES:
+        raise HTTPException(400, f"Unsupported language '{language}'. Supported: {', '.join(sorted(SUPPORTED_LANGUAGES))}")
+
     # Validate title
     title = title.strip()[:MAX_TITLE_LENGTH]
     if not title:
@@ -100,6 +107,7 @@ async def create_meeting(
         min_speakers=min_speakers,
         max_speakers=max_speakers,
         vocabulary=effective_vocab,
+        language=language,
     )
     db.add(meeting)
     db.flush()
@@ -193,6 +201,7 @@ def start_processing(meeting_id: str, db: Session = Depends(get_db)):
 class LiveMeetingRequest(BaseModel):
     title: str
     vocabulary: str | None = None
+    language: str = "sv"
 
 
 @router.post("/live")
@@ -206,12 +215,16 @@ def create_live_meeting(req: LiveMeetingRequest, db: Session = Depends(get_db)):
         if default_vocab:
             effective_vocab = default_vocab
 
+    # Validate language
+    lang = req.language if req.language in SUPPORTED_LANGUAGES else "sv"
+
     meeting = Meeting(
         title=req.title,
         status=MeetingStatus.RECORDING,
         mode=MeetingMode.LIVE.value,
         recording_status=RecordingStatus.RECORDING.value,
         vocabulary=effective_vocab,
+        language=lang,
     )
     db.add(meeting)
     db.commit()
