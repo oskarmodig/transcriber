@@ -10,19 +10,22 @@ class WhisperService:
         self.cli_path = settings.whisper_cli_path
         self.model_path = settings.whisper_model_path
 
-    def transcribe(self, audio_path: str, vocabulary: str | None = None) -> list[dict]:
+    def transcribe(self, audio_path: str, vocabulary: str | None = None, language: str = "sv", model_path: str | None = None) -> list[dict]:
         """
         Transcribe audio using whisper-cli.
         Returns list of {start, end, text} dicts.
         vocabulary: domain-specific terms to prime Whisper (passed as --prompt).
+        language: language code for whisper (e.g. 'sv', 'en').
+        model_path: override the default model path.
         """
+        model = model_path or self.model_path
         output_json = audio_path + ".json"
 
         cmd = [
             self.cli_path,
-            "-m", self.model_path,
+            "-m", model,
             "-f", audio_path,
-            "-l", "sv",
+            "-l", language,
             "-oj",  # output JSON
             "-of", audio_path,  # output file prefix (creates audio.wav.json)
         ]
@@ -58,12 +61,13 @@ class WhisperService:
 
         return segments
 
-    def transcribe_chunk(self, audio_path: str, model_path: str | None = None, prompt: str | None = None, vocabulary: str | None = None) -> list[dict]:
+    def transcribe_chunk(self, audio_path: str, model_path: str | None = None, prompt: str | None = None, vocabulary: str | None = None, language: str = "sv") -> list[dict]:
         """
         Transcribe a short audio chunk using whisper-cli.
         Uses the small model by default for speed. Same output format as transcribe().
         prompt: previous transcription text for context continuity.
         vocabulary: domain-specific terms prepended to prompt.
+        language: language code for whisper (e.g. 'sv', 'en').
         """
         model = model_path or settings.whisper_small_model_path
         output_json = audio_path + ".json"
@@ -72,7 +76,7 @@ class WhisperService:
             self.cli_path,
             "-m", model,
             "-f", audio_path,
-            "-l", "sv",
+            "-l", language,
             "-oj",
             "-of", audio_path,
             "--no-speech-thold", "0.5",  # Skip segments with high no-speech probability
