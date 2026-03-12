@@ -66,6 +66,7 @@ def init_db():
         "ALTER TABLE meetings ADD COLUMN IF NOT EXISTS encryption_verify TEXT",
         "ALTER TABLE action_results ADD COLUMN IF NOT EXISTS is_encrypted BOOLEAN DEFAULT FALSE",
         "ALTER TABLE meetings ADD COLUMN IF NOT EXISTS vocabulary TEXT",
+        "ALTER TABLE meetings ADD COLUMN IF NOT EXISTS language VARCHAR DEFAULT 'sv'",
         # Full-text search index on segment text
         "CREATE INDEX IF NOT EXISTS ix_segments_text_search ON segments USING gin (to_tsvector('simple', text))",
     ]

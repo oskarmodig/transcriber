@@ -49,6 +49,7 @@ class Meeting(Base):
     recording_status: Mapped[str] = mapped_column(String, nullable=True)
     polish_history: Mapped[dict] = mapped_column(JSON, nullable=True)
     vocabulary: Mapped[str] = mapped_column(Text, nullable=True)  # Domain terms for Whisper prompt
+    language: Mapped[str] = mapped_column(String, default="sv")  # Transcription language (sv, en)
     is_encrypted: Mapped[bool] = mapped_column(Boolean, default=False)
     encryption_salt: Mapped[str] = mapped_column(Text, nullable=True)
     encryption_verify: Mapped[str] = mapped_column(Text, nullable=True)
@@ -74,6 +75,7 @@ class Meeting(Base):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
             "vocabulary": self.vocabulary,
+            "language": self.language or "sv",
             "is_encrypted": bool(self.is_encrypted),
             "speaker_count": speaker_count if speaker_count is not None else (len(self.speakers) if self.speakers else 0),
             "segment_count": segment_count if segment_count is not None else (len(self.segments) if self.segments else 0),
