@@ -87,14 +87,19 @@ docker-compose up -d
 ```
 
 This starts:
-- PostgreSQL on port **5433**
-- Redis on port **6380**
+- PostgreSQL on port **5433** (configurable via `POSTGRES_PORT`)
+- Redis on port **6380** (configurable via `REDIS_PORT`)
 
 ### 6. Create the .env file
 
 Create a file named `.env` in the project root with this content:
 
 ```env
+# Docker service ports (change if defaults conflict with other services)
+POSTGRES_PORT=5433
+REDIS_PORT=6380
+
+# These must use the same ports as above
 DATABASE_URL=postgresql://transcriber:transcriber@localhost:5433/transcriber
 REDIS_URL=redis://localhost:6380/0
 
